@@ -4,6 +4,6 @@ require 'umts_time/american_parser'
 require 'umts_time/formats'
 
 class Time
-  include UMTSTime::Formats
   include UMTSTime::AmericanParser
+  include UMTSTime::Formats
 end
