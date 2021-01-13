@@ -5,8 +5,8 @@ require 'active_support/duration'
 class AtomicTime
   module Attributes
     def initialize(secs)
-      raise TypeError 'Time value must be numeric.' unless secs.is_a? Numeric
-      raise ArgumentError 'Time value must be positive.' if (secs = secs.to_i).negative?
+      raise TypeError, 'Time value must be numeric.' unless secs.is_a? Numeric
+      raise ArgumentError, 'Time value must be positive.' if (secs = secs.to_i).negative?
 
       @val = secs
     end
@@ -36,7 +36,7 @@ class AtomicTime
       end
 
       new_val = (@val + secs).floor
-      raise ArgumentError if new_val.negative?
+      raise ArgumentError, 'Resulting time must not be negative.' if new_val.negative?
 
       @val = new_val
       clear_attrs
