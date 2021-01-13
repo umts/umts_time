@@ -27,7 +27,11 @@ the `Date` class. Now all of the `DATE_FORMATS` constants point to the new
 Other Helpers
 -------------
 
-Other smaller features include:
+Smaller changes include:
+
+- The `#parse` methods on date/time classes now assume mm/dd/yyyy (american) formats.
+
+Smaller additions include:
 
 - `Range#length` (Returns the 'span' length of a range)
 - `Range#overlap` (Accepts other ranges and returns overlapping periods)
