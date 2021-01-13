@@ -5,11 +5,10 @@ require 'active_support/duration'
 class AtomicTime
   module Attributes
     def initialize(secs)
-      raise TypeError unless secs.is_a? Numeric
-      raise ArgumentError if (secs = secs.to_i).negative?
+      raise TypeError 'Time value must be numeric.' unless secs.is_a? Numeric
+      raise ArgumentError 'Time value must be positive.' if (secs = secs.to_i).negative?
 
       @val = secs
-      @hour, @min, @sec = nil
     end
 
     def hour
@@ -52,14 +51,13 @@ class AtomicTime
 
     def memoize_attrs
       remainder = @val
-      part_map = %i[hour min sec].zip %i[hours minutes seconds]
+      part_map = { hour: :hours, min: :minutes, sec: :seconds }
 
       part_map.each do |attr, part|
         part_in_secs = ActiveSupport::Duration::PARTS_IN_SECONDS[part]
-        val = remainder / part_in_secs
-        instance_variable_set :"@#{attr}", val
 
-        remainder = remainder - (val * part_in_secs)
+        val, remainder = remainder.divmod(part_in_secs)
+        instance_variable_set :"@#{attr}", val
       end
     end
   end
