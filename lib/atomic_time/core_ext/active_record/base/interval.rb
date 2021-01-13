@@ -14,6 +14,8 @@ class AtomicTime
 
             before_validation do
               lower_val, upper_val = [lower, upper].map { |key| send key }
+
+              # DateTime interprets integers as days with +, while Time interprets them as seconds.
               adj = upper_val.is_a?(DateTime) ? 1 : ::ActiveSupport::Duration::SECONDS_PER_DAY
 
               upper_val += adj while lower_val > upper_val

@@ -77,9 +77,11 @@ class AtomicTime
       end
 
       def sum_parts(**parts)
-        (parts[:hour] * ActiveSupport::Duration::PARTS_IN_SECONDS[:hours]) +
-          (parts[:min] * ActiveSupport::Duration::PARTS_IN_SECONDS[:minutes]) +
-          (parts[:sec] * ActiveSupport::Duration::PARTS_IN_SECONDS[:seconds])
+        part_map = { hour: :hours, min: :minutes, sec: :seconds }
+
+        part_map.sum do |attr, part|
+          parts[attr] * ActiveSupport::Duration::PARTS_IN_SECONDS[part]
+        end
       end
     end
   end
