@@ -11,10 +11,6 @@ class AtomicTime
     end
     alias_method :ctime, :asctime
 
-    def hash
-      @val.hash
-    end
-
     def strftime(format)
       to_time.strftime format
     end
@@ -56,7 +52,6 @@ class AtomicTime
     end
 
     def to_time(on = Date.today)
-      on = Date.new on.year, on.month, on.day
       Time.new(on.year, on.month, on.day) + @val
     end
   end

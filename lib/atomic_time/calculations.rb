@@ -22,7 +22,7 @@ class AtomicTime
     def <=>(other)
       other = other.to_atomic_time.to_i if other.respond_to? :to_atomic_time
 
-      to_i <=> (0 + other)
+      to_i <=> other
     end
 
     def eql?(other)

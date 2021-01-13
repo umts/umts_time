@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'active_support/duration'
+require 'active_support/core_ext/time/calculations'
+require 'time'
+
 class AtomicTime
   module Constructors
     module ClassMethods
@@ -10,15 +14,11 @@ class AtomicTime
       end
 
       def httpdate(str)
-        result = Time.httpdate str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :httpdate, str
       end
 
       def iso8601(str)
-        result = Time.iso8601 str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :iso8601, str
       end
 
       def new(hour = nil, min = nil, sec = nil)
@@ -26,62 +26,54 @@ class AtomicTime
 
         parts = wrap_parts hour, min, sec
 
-        raise TypeError unless parts.values.all? { |v| v.is_a? Numeric }
-        raise ArgumentError if parts.values.any? { |v| v.negative? }
-        raise ArgumentError unless (0...60).include? parts[:min]
-        raise ArgumentError unless (0...60).include? parts[:sec]
+        raise TypeError 'Time components must be numeric.' unless parts.values.all? { |v| v.is_a? Numeric }
+        raise ArgumentError 'Time components must be positive.' if parts.values.any? { |v| v.negative? }
+        raise ArgumentError 'Minute must be within (0...60).' unless (0...60).include? parts[:min]
+        raise ArgumentError 'Second must be within (0...60).' unless (0...60).include? parts[:sec]
 
         at sum_parts parts
       end
       alias_method :mktime, :new
 
       def now
-        result = Time.now
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :now
       end
       alias_method :current, :now
 
       def rfc2822(str)
-        result = Time.rfc2822 str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :rfc2822, str
       end
 
       def rfc3339(str)
-        result = Time.rfc3339 str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :rfc3339, str
       end
 
       def rfc822(str)
-        result = Time.rfc822 str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :rfc822, str
       end
 
       def strptime(date, format, now = Time.now)
-        result = Time.strptime date, format, now
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :strptime, date, format, now
       end
 
       def parse(str, now = Time.now)
-        result = Time.parse str, now
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :parse, str, now
       end
 
       def xmlschema(str)
-        result = Time.xmlschema str
-        parts = wrap_parts result.hour, result.min, result.sec
-        at sum_parts parts
+        delegate_to_time :xmlschema, str
       end
 
       private
 
+      def delegate_to_time(method, *args)
+        result = Time.send(method, *args)
+        parts = wrap_parts result.hour, result.min, result.sec
+        at sum_parts parts
+      end
+
       def wrap_parts(hour, min, sec)
-        %i[hour min sec].zip([hour || 0, min || 0, sec || 0]).to_h
+        { hour: hour || 0, min: min || 0, sec: sec || 0 }
       end
 
       def sum_parts(**parts)
