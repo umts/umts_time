@@ -1,8 +1,4 @@
 # frozen_string_literal: true
 
-require 'atomic_time'
-require 'umts_time/formats'
-
-class AtomicTime
-  include UMTSTime::Formats
-end
+require_relative 'atomic_time/am_parser'
+require_relative 'atomic_time/formats'

@@ -84,11 +84,5 @@ class AtomicTime
       part_in_secs = ActiveSupport::Duration::PARTS_IN_SECONDS[part]
       @val - (@val % part_in_secs)
     end
-
-    class << self
-      def included(klass)
-        klass.extend ClassMethods
-      end
-    end
   end
 end
