@@ -9,6 +9,7 @@ class AtomicTime
       raise ArgumentError, 'Time value must be positive.' if (secs = secs.to_i).negative?
 
       @val = secs
+      @hour, @min, @sec = nil
     end
 
     def hour
