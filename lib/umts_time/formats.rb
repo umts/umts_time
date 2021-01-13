@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support/core_ext/date/conversions'
+
 module UMTSTime
   module Formats
     DATE = {
@@ -8,10 +10,11 @@ module UMTSTime
       long: '%B %-d, %Y',
       wday: '%A, %B %-d, %Y',
 
-      db: '%Y-%m-%d',
-      number: '%Y%m%d',
-      rfc822: '%d %b %Y',
-      iso8601: lambda { |date| date.iso8601 }
+      db: Date::DATE_FORMATS[:db],
+      number: Date::DATE_FORMATS[:number],
+      long_ordinal: Date::DATE_FORMATS[:long_ordinal],
+      rfc822: Date::DATE_FORMATS[:rfc822],
+      iso8601: Date::DATE_FORMATS[:iso8601]
     }
 
     TIME = {
@@ -28,13 +31,11 @@ module UMTSTime
       long: lambda { |date_time| date_time.strftime "#{DATE[:long]} #{TIME[:long]}" },
       wday: lambda { |date_time| date_time.strftime "#{DATE[:wday]} #{TIME[:default]}" },
 
-      db: lambda { |date_time| date_time.strftime "#{DATE[:db]} #{TIME[:db]}" },
-      number: lambda { |date_time| date_time.strftime "#{DATE[:number]}#{TIME[:number]}" },
-      rfc822: lambda { |date_time|
-        offset_format = date_time.formatted_offset(false)
-        date_time.strftime("%a, %d %b %Y %H:%M:%S #{offset_format}")
-      },
-      iso8601: lambda { |date_time| date_time.iso8601 }
+      db: Time::DATE_FORMATS[:db],
+      number: Time::DATE_FORMATS[:number],
+      long_ordinal: Time::DATE_FORMATS[:long_ordinal],
+      rfc822: Time::DATE_FORMATS[:rfc822],
+      iso8601: Time::DATE_FORMATS[:iso8601]
     }
 
     DATE.each { |name, format| DATE_TIME[:"#{name}_date"] = format }
