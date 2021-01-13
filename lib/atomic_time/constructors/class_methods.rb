@@ -26,10 +26,10 @@ class AtomicTime
 
         parts = wrap_parts hour, min, sec
 
-        raise TypeError 'Time components must be numeric.' unless parts.values.all? { |v| v.is_a? Numeric }
-        raise ArgumentError 'Time components must be positive.' if parts.values.any? { |v| v.negative? }
-        raise ArgumentError 'Minute must be within (0...60).' unless (0...60).include? parts[:min]
-        raise ArgumentError 'Second must be within (0...60).' unless (0...60).include? parts[:sec]
+        raise TypeError, 'Time components must be numeric.' unless parts.values.all? { |v| v.is_a? Numeric }
+        raise ArgumentError, 'Time components must be positive.' if parts.values.any? { |v| v.negative? }
+        raise ArgumentError, 'Minute must be within (0...60).' unless (0...60).include? parts[:min]
+        raise ArgumentError, 'Second must be within (0...60).' unless (0...60).include? parts[:sec]
 
         at sum_parts parts
       end
