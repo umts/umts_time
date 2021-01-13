@@ -1,11 +1,5 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/date/acts_like'
-require 'active_support/core_ext/date/conversions'
-require 'active_support/core_ext/date_time/acts_like'
-require 'active_support/core_ext/time/acts_like'
-require 'active_support/core_ext/time/conversions'
-
 module UMTSTime
   module Formats
     DATE = {
@@ -45,22 +39,5 @@ module UMTSTime
 
     DATE.each { |name, format| DATE_TIME[:"#{name}_date"] = format }
     TIME.each { |name, format| DATE_TIME[:"#{name}_time"] = format }
-
-    class << self
-      def included(klass)
-        date = klass.method_defined? :acts_like_date?
-        time = klass.method_defined? :acts_like_time?
-
-        klass.send :remove_const, :DATE_FORMATS rescue StandardError
-
-        if date && time
-          klass.send :const_set, :DATE_FORMATS, DATE_TIME
-        elsif date
-          klass.send :const_set, :DATE_FORMATS, DATE
-        elsif time
-          klass.send :const_set, :DATE_FORMATS, TIME
-        end
-      end
-    end
   end
 end
