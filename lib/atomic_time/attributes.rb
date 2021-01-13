@@ -51,15 +51,15 @@ class AtomicTime
     end
 
     def memoize_attrs
-      rem = @val
+      remainder = @val
       part_map = %i[hour min sec].zip %i[hours minutes seconds]
 
       part_map.each do |attr, part|
         part_in_secs = ActiveSupport::Duration::PARTS_IN_SECONDS[part]
-        val = rem / part_in_secs
+        val = remainder / part_in_secs
         instance_variable_set :"@#{attr}", val
 
-        rem = rem - (val * part_in_secs)
+        remainder = remainder - (val * part_in_secs)
       end
     end
   end
