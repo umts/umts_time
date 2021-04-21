@@ -1,0 +1,1 @@
+-I lib -I spec/lib -I spec/support -I spec/integration -I spec/core -r spec_helper
